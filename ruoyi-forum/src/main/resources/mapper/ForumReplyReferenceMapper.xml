@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumReplyReferenceMapper">
+
+    <resultMap type="ForumReplyReference" id="ForumReplyReferenceResult">
+        <result property="referenceId"    column="reference_id"    />
+        <result property="replyId"    column="reply_id"    />
+        <result property="referencedReplyId"    column="referenced_reply_id"    />
+        <result property="referencedUserId"    column="referenced_user_id"    />
+        <result property="referencedContent"    column="referenced_content"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectForumReplyReferenceVo">
+        select reference_id, reply_id, referenced_reply_id, referenced_user_id, referenced_content, create_time from forum_reply_reference
+    </sql>
+
+    <select id="selectForumReplyReferenceList" parameterType="ForumReplyReference" resultMap="ForumReplyReferenceResult">
+        <include refid="selectForumReplyReferenceVo"/>
+        <where>
+            <if test="replyId != null "> and reply_id = #{replyId}</if>
+            <if test="referencedReplyId != null "> and referenced_reply_id = #{referencedReplyId}</if>
+            <if test="referencedUserId != null "> and referenced_user_id = #{referencedUserId}</if>
+            <if test="referencedContent != null  and referencedContent != ''"> and referenced_content = #{referencedContent}</if>
+        </where>
+    </select>
+
+    <select id="selectForumReplyReferenceByReferenceId" parameterType="Long" resultMap="ForumReplyReferenceResult">
+        <include refid="selectForumReplyReferenceVo"/>
+        where reference_id = #{referenceId}
+    </select>
+
+    <insert id="insertForumReplyReference" parameterType="ForumReplyReference" useGeneratedKeys="true" keyProperty="referenceId">
+        insert into forum_reply_reference
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="replyId != null">reply_id,</if>
+            <if test="referencedReplyId != null">referenced_reply_id,</if>
+            <if test="referencedUserId != null">referenced_user_id,</if>
+            <if test="referencedContent != null">referenced_content,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="replyId != null">#{replyId},</if>
+            <if test="referencedReplyId != null">#{referencedReplyId},</if>
+            <if test="referencedUserId != null">#{referencedUserId},</if>
+            <if test="referencedContent != null">#{referencedContent},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumReplyReference" parameterType="ForumReplyReference">
+        update forum_reply_reference
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="replyId != null">reply_id = #{replyId},</if>
+            <if test="referencedReplyId != null">referenced_reply_id = #{referencedReplyId},</if>
+            <if test="referencedUserId != null">referenced_user_id = #{referencedUserId},</if>
+            <if test="referencedContent != null">referenced_content = #{referencedContent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where reference_id = #{referenceId}
+    </update>
+
+    <delete id="deleteForumReplyReferenceByReferenceId" parameterType="Long">
+        delete from forum_reply_reference where reference_id = #{referenceId}
+    </delete>
+
+    <delete id="deleteForumReplyReferenceByReferenceIds" parameterType="String">
+        delete from forum_reply_reference where reference_id in
+        <foreach item="referenceId" collection="array" open="(" separator="," close=")">
+            #{referenceId}
+        </foreach>
+    </delete>
+</mapper>

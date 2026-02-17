@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumUserCoinsMapper">
+
+    <resultMap type="ForumUserCoins" id="ForumUserCoinsResult">
+        <result property="coinsId"    column="coins_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="totalCoins"    column="total_coins"    />
+        <result property="availableCoins"    column="available_coins"    />
+        <result property="frozenCoins"    column="frozen_coins"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectForumUserCoinsVo">
+        select coins_id, user_id, total_coins, available_coins, frozen_coins, update_time from forum_user_coins
+    </sql>
+
+    <select id="selectForumUserCoinsList" parameterType="ForumUserCoins" resultMap="ForumUserCoinsResult">
+        <include refid="selectForumUserCoinsVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="totalCoins != null "> and total_coins = #{totalCoins}</if>
+            <if test="availableCoins != null "> and available_coins = #{availableCoins}</if>
+            <if test="frozenCoins != null "> and frozen_coins = #{frozenCoins}</if>
+        </where>
+    </select>
+
+    <select id="selectCoinsByUserId" parameterType="Long" resultMap="ForumUserCoinsResult">
+        <include refid="selectForumUserCoinsVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectForumUserCoinsByCoinsId" parameterType="Long" resultMap="ForumUserCoinsResult">
+        <include refid="selectForumUserCoinsVo"/>
+        where coins_id = #{coinsId}
+    </select>
+
+    <insert id="insertForumUserCoins" parameterType="ForumUserCoins" useGeneratedKeys="true" keyProperty="coinsId">
+        insert into forum_user_coins
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="totalCoins != null">total_coins,</if>
+            <if test="availableCoins != null">available_coins,</if>
+            <if test="frozenCoins != null">frozen_coins,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="totalCoins != null">#{totalCoins},</if>
+            <if test="availableCoins != null">#{availableCoins},</if>
+            <if test="frozenCoins != null">#{frozenCoins},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumUserCoins" parameterType="ForumUserCoins">
+        update forum_user_coins
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="totalCoins != null">total_coins = #{totalCoins},</if>
+            <if test="availableCoins != null">available_coins = #{availableCoins},</if>
+            <if test="frozenCoins != null">frozen_coins = #{frozenCoins},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where coins_id = #{coinsId}
+    </update>
+
+    <delete id="deleteForumUserCoinsByCoinsId" parameterType="Long">
+        delete from forum_user_coins where coins_id = #{coinsId}
+    </delete>
+
+    <delete id="deleteForumUserCoinsByCoinsIds" parameterType="String">
+        delete from forum_user_coins where coins_id in
+        <foreach item="coinsId" collection="array" open="(" separator="," close=")">
+            #{coinsId}
+        </foreach>
+    </delete>
+</mapper>

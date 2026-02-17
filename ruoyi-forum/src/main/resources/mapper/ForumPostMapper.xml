@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumPostMapper">
+
+    <resultMap type="ForumPost" id="ForumPostResult">
+        <result property="postId"    column="post_id"    />
+        <result property="boardId"    column="board_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="postType"    column="post_type"    />
+        <result property="viewCount"    column="view_count"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="commentCount"    column="comment_count"    />
+        <result property="isTop"    column="is_top"    />
+        <result property="isEssence"    column="is_essence"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="bountyCoins" column="bounty_coins"/>
+    </resultMap>
+
+    <sql id="selectForumPostVo">
+        select p.post_id, p.board_id, p.user_id, p.title, p.content, p.post_type,
+               p.view_count, p.like_count, p.comment_count, p.is_top, p.is_essence,
+               p.status, p.create_by, p.create_time, p.update_by, p.update_time, p.remark,
+               b.coins as bounty_coins
+        from forum_post p
+                 left join forum_bounty b on p.post_id = b.post_id
+    </sql>
+
+    <select id="selectForumPostList" parameterType="ForumPost" resultMap="ForumPostResult">
+        <include refid="selectForumPostVo"/>
+        <where>
+            <if test="boardId != null "> and p.board_id = #{boardId}</if>
+            <if test="userId != null "> and p.user_id = #{userId}</if>
+            <if test="title != null  and title != ''"> and p.title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and p.content like concat('%', #{content}, '%')</if>
+            <if test="postType != null  and postType != ''"> and p.post_type = #{postType}</if>
+            <if test="viewCount != null "> and p.view_count = #{viewCount}</if>
+            <if test="likeCount != null "> and p.like_count = #{likeCount}</if>
+            <if test="commentCount != null "> and p.comment_count = #{commentCount}</if>
+            <if test="isTop != null  and isTop != ''"> and p.is_top = #{isTop}</if>
+            <if test="isEssence != null  and isEssence != ''"> and p.is_essence = #{isEssence}</if>
+            <if test="status != null  and status != ''"> and p.status = #{status}</if>
+        </where>
+        order by p.is_top desc, p.create_time desc
+    </select>
+
+    <select id="selectForumPostByPostId" parameterType="Long" resultMap="ForumPostResult">
+        <include refid="selectForumPostVo"/>
+        where p.post_id = #{postId}
+    </select>
+
+    <select id="selectHotThreads" resultMap="ForumPostResult">
+        <include refid="selectForumPostVo"/>
+        where p.status = '0'
+        order by
+        p.is_top desc,
+        (p.comment_count * 5 + p.like_count * 2 + p.view_count) desc, p.create_time desc
+        limit 5
+    </select>
+
+    <update id="updatePostReplyStats">
+        UPDATE forum_post
+        SET comment_count = comment_count + 1,
+            update_time = sysdate()
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="updateLikeCount">
+        update forum_post set like_count = like_count + #{amount} where post_id = #{postId}
+    </update>
+
+    <insert id="insertForumPost" parameterType="ForumPost" useGeneratedKeys="true" keyProperty="postId">
+        insert into forum_post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="boardId != null">board_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="postType != null">post_type,</if>
+            <if test="viewCount != null">view_count,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="commentCount != null">comment_count,</if>
+            <if test="isTop != null">is_top,</if>
+            <if test="isEssence != null">is_essence,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="boardId != null">#{boardId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="postType != null">#{postType},</if>
+            <if test="viewCount != null">#{viewCount},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="commentCount != null">#{commentCount},</if>
+            <if test="isTop != null">#{isTop},</if>
+            <if test="isEssence != null">#{isEssence},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumPost" parameterType="ForumPost">
+        update forum_post
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="boardId != null">board_id = #{boardId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="postType != null">post_type = #{postType},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+            <if test="isTop != null">is_top = #{isTop},</if>
+            <if test="isEssence != null">is_essence = #{isEssence},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where post_id = #{postId}
+    </update>
+
+    <delete id="deleteForumPostByPostId" parameterType="Long">
+        delete from forum_post where post_id = #{postId}
+    </delete>
+
+    <delete id="deleteForumPostByPostIds" parameterType="String">
+        delete from forum_post where post_id in
+        <foreach item="postId" collection="array" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </delete>
+
+</mapper>

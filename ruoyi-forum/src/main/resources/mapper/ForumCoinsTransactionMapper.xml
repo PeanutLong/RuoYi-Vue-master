@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumCoinsTransactionMapper">
+
+    <resultMap type="ForumCoinsTransaction" id="ForumCoinsTransactionResult">
+        <result property="transactionId"    column="transaction_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="amount"    column="amount"    />
+        <result property="balanceAfter"    column="balance_after"    />
+        <result property="transactionType"    column="transaction_type"    />
+        <result property="relatedId"    column="related_id"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectForumCoinsTransactionVo">
+        select transaction_id, user_id, amount, balance_after, transaction_type, related_id, description, create_time from forum_coins_transaction
+    </sql>
+
+    <select id="selectForumCoinsTransactionList" parameterType="ForumCoinsTransaction" resultMap="ForumCoinsTransactionResult">
+        <include refid="selectForumCoinsTransactionVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="balanceAfter != null "> and balance_after = #{balanceAfter}</if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="relatedId != null "> and related_id = #{relatedId}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+        </where>
+    </select>
+
+    <select id="selectForumCoinsTransactionByTransactionId" parameterType="Long" resultMap="ForumCoinsTransactionResult">
+        <include refid="selectForumCoinsTransactionVo"/>
+        where transaction_id = #{transactionId}
+    </select>
+
+    <insert id="insertForumCoinsTransaction" parameterType="ForumCoinsTransaction" useGeneratedKeys="true" keyProperty="transactionId">
+        insert into forum_coins_transaction
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="balanceAfter != null">balance_after,</if>
+            <if test="transactionType != null and transactionType != ''">transaction_type,</if>
+            <if test="relatedId != null">related_id,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="balanceAfter != null">#{balanceAfter},</if>
+            <if test="transactionType != null and transactionType != ''">#{transactionType},</if>
+            <if test="relatedId != null">#{relatedId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumCoinsTransaction" parameterType="ForumCoinsTransaction">
+        update forum_coins_transaction
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="balanceAfter != null">balance_after = #{balanceAfter},</if>
+            <if test="transactionType != null and transactionType != ''">transaction_type = #{transactionType},</if>
+            <if test="relatedId != null">related_id = #{relatedId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where transaction_id = #{transactionId}
+    </update>
+
+    <delete id="deleteForumCoinsTransactionByTransactionId" parameterType="Long">
+        delete from forum_coins_transaction where transaction_id = #{transactionId}
+    </delete>
+
+    <delete id="deleteForumCoinsTransactionByTransactionIds" parameterType="String">
+        delete from forum_coins_transaction where transaction_id in
+        <foreach item="transactionId" collection="array" open="(" separator="," close=")">
+            #{transactionId}
+        </foreach>
+    </delete>
+</mapper>

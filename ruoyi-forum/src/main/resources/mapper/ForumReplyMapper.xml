@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumReplyMapper">
+
+    <resultMap type="ForumReply" id="ForumReplyResult">
+        <result property="replyId"    column="reply_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="parentReplyId"    column="parent_reply_id"    />
+        <result property="rootReplyId"    column="root_reply_id"    />
+        <result property="content"    column="content"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="replyCount"    column="reply_count"    />
+        <result property="status"    column="status"    />
+        <result property="isAuthor"    column="is_author"    />
+        <result property="floorNum"    column="floor_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectForumReplyVo">
+        select reply_id, post_id, user_id, parent_reply_id, root_reply_id, content, like_count, reply_count, status, is_author, floor_num, create_by, create_time, update_by, update_time, remark from forum_reply
+    </sql>
+
+    <select id="selectForumReplyList" parameterType="ForumReply" resultMap="ForumReplyResult">
+        <include refid="selectForumReplyVo"/>
+        <where>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="parentReplyId != null "> and parent_reply_id = #{parentReplyId}</if>
+            <if test="rootReplyId != null "> and root_reply_id = #{rootReplyId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="likeCount != null "> and like_count = #{likeCount}</if>
+            <if test="replyCount != null "> and reply_count = #{replyCount}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="isAuthor != null  and isAuthor != ''"> and is_author = #{isAuthor}</if>
+            <if test="floorNum != null "> and floor_num = #{floorNum}</if>
+        </where>
+    </select>
+
+    <select id="selectMaxFloorByPostId" resultType="Long">
+        SELECT IFNULL(MAX(floor_num), 0) FROM forum_reply WHERE post_id = #{postId}
+    </select>
+
+    <select id="selectForumReplyByReplyId" parameterType="Long" resultMap="ForumReplyResult">
+        <include refid="selectForumReplyVo"/>
+        where reply_id = #{replyId}
+    </select>
+
+    <update id="updateLikeCount">
+        update forum_reply set like_count = like_count + #{amount} where reply_id = #{replyId}
+    </update>
+
+    <insert id="insertForumReply" parameterType="ForumReply" useGeneratedKeys="true" keyProperty="replyId">
+        insert into forum_reply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postId != null">post_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="parentReplyId != null">parent_reply_id,</if>
+            <if test="rootReplyId != null">root_reply_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="replyCount != null">reply_count,</if>
+            <if test="status != null">status,</if>
+            <if test="isAuthor != null">is_author,</if>
+            <if test="floorNum != null">floor_num,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">#{postId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="parentReplyId != null">#{parentReplyId},</if>
+            <if test="rootReplyId != null">#{rootReplyId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="replyCount != null">#{replyCount},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isAuthor != null">#{isAuthor},</if>
+            <if test="floorNum != null">#{floorNum},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumReply" parameterType="ForumReply">
+        update forum_reply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="parentReplyId != null">parent_reply_id = #{parentReplyId},</if>
+            <if test="rootReplyId != null">root_reply_id = #{rootReplyId},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="replyCount != null">reply_count = #{replyCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isAuthor != null">is_author = #{isAuthor},</if>
+            <if test="floorNum != null">floor_num = #{floorNum},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where reply_id = #{replyId}
+    </update>
+
+    <delete id="deleteForumReplyByReplyId" parameterType="Long">
+        delete from forum_reply where reply_id = #{replyId}
+    </delete>
+
+    <delete id="deleteForumReplyByReplyIds" parameterType="String">
+        delete from forum_reply where reply_id in
+        <foreach item="replyId" collection="array" open="(" separator="," close=")">
+            #{replyId}
+        </foreach>
+    </delete>
+</mapper>

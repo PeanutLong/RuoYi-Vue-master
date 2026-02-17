@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumReplyImageMapper">
+
+    <resultMap type="ForumReplyImage" id="ForumReplyImageResult">
+        <result property="imageId"    column="image_id"    />
+        <result property="replyId"    column="reply_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="thumbnailUrl"    column="thumbnail_url"    />
+        <result property="imageSize"    column="image_size"    />
+        <result property="imageName"    column="image_name"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectForumReplyImageVo">
+        select image_id, reply_id, user_id, image_url, thumbnail_url, image_size, image_name, sort_order, create_time from forum_reply_image
+    </sql>
+
+    <select id="selectForumReplyImageList" parameterType="ForumReplyImage" resultMap="ForumReplyImageResult">
+        <include refid="selectForumReplyImageVo"/>
+        <where>
+            <if test="replyId != null "> and reply_id = #{replyId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+            <if test="thumbnailUrl != null  and thumbnailUrl != ''"> and thumbnail_url = #{thumbnailUrl}</if>
+            <if test="imageSize != null "> and image_size = #{imageSize}</if>
+            <if test="imageName != null  and imageName != ''"> and image_name like concat('%', #{imageName}, '%')</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+    </select>
+
+    <select id="selectForumReplyImageByImageId" parameterType="Long" resultMap="ForumReplyImageResult">
+        <include refid="selectForumReplyImageVo"/>
+        where image_id = #{imageId}
+    </select>
+
+    <insert id="insertForumReplyImage" parameterType="ForumReplyImage" useGeneratedKeys="true" keyProperty="imageId">
+        insert into forum_reply_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="replyId != null">reply_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url,</if>
+            <if test="thumbnailUrl != null">thumbnail_url,</if>
+            <if test="imageSize != null">image_size,</if>
+            <if test="imageName != null">image_name,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="replyId != null">#{replyId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="imageUrl != null and imageUrl != ''">#{imageUrl},</if>
+            <if test="thumbnailUrl != null">#{thumbnailUrl},</if>
+            <if test="imageSize != null">#{imageSize},</if>
+            <if test="imageName != null">#{imageName},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumReplyImage" parameterType="ForumReplyImage">
+        update forum_reply_image
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="replyId != null">reply_id = #{replyId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+            <if test="thumbnailUrl != null">thumbnail_url = #{thumbnailUrl},</if>
+            <if test="imageSize != null">image_size = #{imageSize},</if>
+            <if test="imageName != null">image_name = #{imageName},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where image_id = #{imageId}
+    </update>
+
+    <delete id="deleteForumReplyImageByImageId" parameterType="Long">
+        delete from forum_reply_image where image_id = #{imageId}
+    </delete>
+
+    <delete id="deleteForumReplyImageByImageIds" parameterType="String">
+        delete from forum_reply_image where image_id in
+        <foreach item="imageId" collection="array" open="(" separator="," close=")">
+            #{imageId}
+        </foreach>
+    </delete>
+</mapper>

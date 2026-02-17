@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumCheckInMapper">
+
+    <resultMap type="ForumCheckIn" id="ForumCheckInResult">
+        <result property="checkId"    column="check_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="checkDate"    column="check_date"    />
+        <result property="coinsAwarded"    column="coins_awarded"    />
+        <result property="streakDays"    column="streak_days"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectForumCheckInVo">
+        select check_id, user_id, check_date, coins_awarded, streak_days, create_time from forum_check_in
+    </sql>
+
+    <select id="selectForumCheckInList" parameterType="ForumCheckIn" resultMap="ForumCheckInResult">
+        <include refid="selectForumCheckInVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="checkDate != null "> and check_date = #{checkDate}</if>
+            <if test="coinsAwarded != null "> and coins_awarded = #{coinsAwarded}</if>
+            <if test="streakDays != null "> and streak_days = #{streakDays}</if>
+        </where>
+    </select>
+
+
+    <select id="selectForumCheckInByCheckId" parameterType="Long" resultMap="ForumCheckInResult">
+        <include refid="selectForumCheckInVo"/>
+        where check_id = #{checkId}
+    </select>
+
+    <insert id="insertForumCheckIn" parameterType="ForumCheckIn" useGeneratedKeys="true" keyProperty="checkId">
+        insert into forum_check_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="checkDate != null">check_date,</if>
+            <if test="coinsAwarded != null">coins_awarded,</if>
+            <if test="streakDays != null">streak_days,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="checkDate != null">#{checkDate},</if>
+            <if test="coinsAwarded != null">#{coinsAwarded},</if>
+            <if test="streakDays != null">#{streakDays},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumCheckIn" parameterType="ForumCheckIn">
+        update forum_check_in
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="checkDate != null">check_date = #{checkDate},</if>
+            <if test="coinsAwarded != null">coins_awarded = #{coinsAwarded},</if>
+            <if test="streakDays != null">streak_days = #{streakDays},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where check_id = #{checkId}
+    </update>
+
+    <delete id="deleteForumCheckInByCheckId" parameterType="Long">
+        delete from forum_check_in where check_id = #{checkId}
+    </delete>
+
+    <delete id="deleteForumCheckInByCheckIds" parameterType="String">
+        delete from forum_check_in where check_id in
+        <foreach item="checkId" collection="array" open="(" separator="," close=")">
+            #{checkId}
+        </foreach>
+    </delete>
+</mapper>

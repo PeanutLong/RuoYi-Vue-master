@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumBoardMapper">
+
+    <resultMap type="ForumBoard" id="ForumBoardResult">
+        <result property="boardId"    column="board_id"    />
+        <result property="boardName"    column="board_name"    />
+        <result property="description"    column="description"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectForumBoardVo">
+        select board_id, board_name, description, sort_order, status, create_by, create_time, update_by, update_time, remark from forum_board
+    </sql>
+
+    <select id="selectForumBoardList" parameterType="ForumBoard" resultMap="ForumBoardResult">
+        <include refid="selectForumBoardVo"/>
+        <where>
+            <if test="boardName != null  and boardName != ''"> and board_name like concat('%', #{boardName}, '%')</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectForumBoardByBoardId" parameterType="Long" resultMap="ForumBoardResult">
+        <include refid="selectForumBoardVo"/>
+        where board_id = #{boardId}
+    </select>
+
+    <insert id="insertForumBoard" parameterType="ForumBoard" useGeneratedKeys="true" keyProperty="boardId">
+        insert into forum_board
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="boardName != null and boardName != ''">board_name,</if>
+            <if test="description != null">description,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="boardName != null and boardName != ''">#{boardName},</if>
+            <if test="description != null">#{description},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumBoard" parameterType="ForumBoard">
+        update forum_board
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="boardName != null and boardName != ''">board_name = #{boardName},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where board_id = #{boardId}
+    </update>
+
+    <delete id="deleteForumBoardByBoardId" parameterType="Long">
+        delete from forum_board where board_id = #{boardId}
+    </delete>
+
+    <delete id="deleteForumBoardByBoardIds" parameterType="String">
+        delete from forum_board where board_id in
+        <foreach item="boardId" collection="array" open="(" separator="," close=")">
+            #{boardId}
+        </foreach>
+    </delete>
+</mapper>

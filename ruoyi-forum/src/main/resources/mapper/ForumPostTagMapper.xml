@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.forum.mapper.ForumPostTagMapper">
+
+    <resultMap type="ForumPostTag" id="ForumPostTagResult">
+        <result property="id"    column="id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="tagId"    column="tag_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectForumPostTagVo">
+        select id, post_id, tag_id, create_time from forum_post_tag
+    </sql>
+
+    <select id="selectForumPostTagList" parameterType="ForumPostTag" resultMap="ForumPostTagResult">
+        <include refid="selectForumPostTagVo"/>
+        <where>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="tagId != null "> and tag_id = #{tagId}</if>
+        </where>
+    </select>
+
+    <select id="selectForumPostTagById" parameterType="Long" resultMap="ForumPostTagResult">
+        <include refid="selectForumPostTagVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertForumPostTag" parameterType="ForumPostTag" useGeneratedKeys="true" keyProperty="id">
+        insert into forum_post_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postId != null">post_id,</if>
+            <if test="tagId != null">tag_id,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">#{postId},</if>
+            <if test="tagId != null">#{tagId},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForumPostTag" parameterType="ForumPostTag">
+        update forum_post_tag
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="tagId != null">tag_id = #{tagId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteForumPostTagById" parameterType="Long">
+        delete from forum_post_tag where id = #{id}
+    </delete>
+
+    <delete id="deleteForumPostTagByIds" parameterType="String">
+        delete from forum_post_tag where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
