@@ -31,7 +31,7 @@ public class ForumReplyController extends BaseController
     /**
      * 查询回复列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumReply forumReply)
     {
@@ -43,7 +43,7 @@ public class ForumReplyController extends BaseController
     /**
      * 导出回复列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:export')")
+
     @Log(title = "回复", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumReply forumReply)
@@ -56,7 +56,7 @@ public class ForumReplyController extends BaseController
     /**
      * 获取回复详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:query')")
+
     @GetMapping(value = "/{replyId}")
     public AjaxResult getInfo(@PathVariable("replyId") Long replyId)
     {
@@ -66,7 +66,7 @@ public class ForumReplyController extends BaseController
     /**
      * 新增回复
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:add')")
+
     @Log(title = "回复", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumReply forumReply)
@@ -77,7 +77,7 @@ public class ForumReplyController extends BaseController
     /**
      * 修改回复
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:edit')")
+
     @Log(title = "回复", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumReply forumReply)
@@ -88,7 +88,7 @@ public class ForumReplyController extends BaseController
     /**
      * 删除回复
      */
-    @PreAuthorize("@ss.hasPermi('forum:reply:remove')")
+
     @Log(title = "回复", businessType = BusinessType.DELETE)
     @DeleteMapping("/{replyIds}")
     public AjaxResult remove(@PathVariable Long[] replyIds)

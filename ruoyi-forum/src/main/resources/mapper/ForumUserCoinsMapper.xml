@@ -32,6 +32,8 @@
         where user_id = #{userId}
     </select>
 
+
+
     <select id="selectForumUserCoinsByCoinsId" parameterType="Long" resultMap="ForumUserCoinsResult">
         <include refid="selectForumUserCoinsVo"/>
         where coins_id = #{coinsId}
@@ -67,9 +69,17 @@
         where coins_id = #{coinsId}
     </update>
 
+
     <delete id="deleteForumUserCoinsByCoinsId" parameterType="Long">
         delete from forum_user_coins where coins_id = #{coinsId}
     </delete>
+
+    <update id="deductCoins">
+        update forum_user_coins
+        set available_coins = available_coins - #{bountyCoins},
+            update_time = sysdate()
+        where user_id = #{userId} and available_coins >= #{bountyCoins}
+    </update>
 
     <delete id="deleteForumUserCoinsByCoinsIds" parameterType="String">
         delete from forum_user_coins where coins_id in

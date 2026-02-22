@@ -43,7 +43,7 @@ public class ForumPostController extends BaseController
     /**
      * 导出帖子列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:post:export')")
+
     @Log(title = "帖子", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumPost forumPost)
@@ -59,24 +59,30 @@ public class ForumPostController extends BaseController
     @GetMapping(value = "/{postId}")
     public AjaxResult getInfo(@PathVariable("postId") Long postId)
     {
+
         return success(forumPostService.selectForumPostByPostId(postId));
     }
 
     /**
      * 新增帖子
      */
-    @PreAuthorize("@ss.hasPermi('forum:post:add')")
+
     @Log(title = "帖子", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumPost forumPost)
     {
-        return toAjax(forumPostService.insertForumPost(forumPost));
+        int rows = forumPostService.insertForumPost(forumPost);
+        if (rows > 0) {
+            // 返回新增的帖子ID，便于前端跳转
+            return AjaxResult.success("发布成功", forumPost.getPostId());
+        }
+        return AjaxResult.error("发布失败");
     }
 
     /**
      * 修改帖子
      */
-    @PreAuthorize("@ss.hasPermi('forum:post:edit')")
+
     @Log(title = "帖子", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumPost forumPost)
@@ -87,7 +93,7 @@ public class ForumPostController extends BaseController
     /**
      * 删除帖子
      */
-    @PreAuthorize("@ss.hasPermi('forum:post:remove')")
+
     @Log(title = "帖子", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
     public AjaxResult remove(@PathVariable Long[] postIds)

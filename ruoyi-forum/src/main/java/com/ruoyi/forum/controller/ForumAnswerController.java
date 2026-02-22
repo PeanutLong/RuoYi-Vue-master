@@ -31,7 +31,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 查询回答列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:answer:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumAnswer forumAnswer)
     {
@@ -43,7 +43,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 导出回答列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:answer:export')")
+
     @Log(title = "回答", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumAnswer forumAnswer)
@@ -56,7 +56,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 获取回答详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:answer:query')")
+
     @GetMapping(value = "/{answerId}")
     public AjaxResult getInfo(@PathVariable("answerId") Long answerId)
     {
@@ -66,7 +66,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 新增回答
      */
-    @PreAuthorize("@ss.hasPermi('forum:answer:add')")
+
     @Log(title = "回答", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumAnswer forumAnswer)
@@ -77,7 +77,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 修改回答
      */
-    @PreAuthorize("@ss.hasPermi('system:answer:edit')")
+
     @Log(title = "回答", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumAnswer forumAnswer)
@@ -88,7 +88,7 @@ public class ForumAnswerController extends BaseController
     /**
      * 删除回答
      */
-    @PreAuthorize("@ss.hasPermi('system:answer:remove')")
+
     @Log(title = "回答", businessType = BusinessType.DELETE)
     @DeleteMapping("/{answerIds}")
     public AjaxResult remove(@PathVariable Long[] answerIds)

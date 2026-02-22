@@ -33,7 +33,7 @@ public class ForumCheckInController extends BaseController
     /**
      * 查询签到列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:in:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumCheckIn forumCheckIn)
     {
@@ -42,7 +42,7 @@ public class ForumCheckInController extends BaseController
         return getDataTable(list);
     }
 
-    @PreAuthorize("@ss.hasPermi('forum:in:add')")
+
     @Log(title = "签到", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumCheckIn forumCheckIn)
@@ -72,7 +72,7 @@ public class ForumCheckInController extends BaseController
     /**
      * 导出签到列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:in:export')")
+
     @Log(title = "签到", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumCheckIn forumCheckIn)
@@ -85,7 +85,7 @@ public class ForumCheckInController extends BaseController
     /**
      * 获取签到详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:in:query')")
+
     @GetMapping(value = "/{checkId}")
     public AjaxResult getInfo(@PathVariable("checkId") Long checkId)
     {
@@ -96,7 +96,7 @@ public class ForumCheckInController extends BaseController
     /**
      * 修改签到
      */
-    @PreAuthorize("@ss.hasPermi('forum:in:edit')")
+
     @Log(title = "签到", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumCheckIn forumCheckIn)
@@ -107,7 +107,7 @@ public class ForumCheckInController extends BaseController
     /**
      * 删除签到
      */
-    @PreAuthorize("@ss.hasPermi('forum:in:remove')")
+
     @Log(title = "签到", businessType = BusinessType.DELETE)
     @DeleteMapping("/{checkIds}")
     public AjaxResult remove(@PathVariable Long[] checkIds)

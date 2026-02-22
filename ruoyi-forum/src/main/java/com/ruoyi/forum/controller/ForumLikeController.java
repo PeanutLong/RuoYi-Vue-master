@@ -31,7 +31,7 @@ public class ForumLikeController extends BaseController
     /**
      * 查询点赞列表
      */
-    @PreAuthorize("@ss.hasPermi('system:like:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumLike forumLike)
     {
@@ -43,7 +43,7 @@ public class ForumLikeController extends BaseController
     /**
      * 导出点赞列表
      */
-    @PreAuthorize("@ss.hasPermi('system:like:export')")
+
     @Log(title = "点赞", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumLike forumLike)
@@ -56,7 +56,7 @@ public class ForumLikeController extends BaseController
     /**
      * 获取点赞详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:like:query')")
+
     @GetMapping(value = "/{likeId}")
     public AjaxResult getInfo(@PathVariable("likeId") Long likeId)
     {
@@ -66,7 +66,7 @@ public class ForumLikeController extends BaseController
     /**
      * 新增点赞
      */
-    @PreAuthorize("@ss.hasPermi('system:like:add')")
+
     @Log(title = "点赞", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumLike forumLike)
@@ -77,7 +77,7 @@ public class ForumLikeController extends BaseController
     /**
      * 修改点赞
      */
-    @PreAuthorize("@ss.hasPermi('system:like:edit')")
+
     @Log(title = "点赞", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumLike forumLike)
@@ -88,7 +88,7 @@ public class ForumLikeController extends BaseController
     /**
      * 删除点赞
      */
-    @PreAuthorize("@ss.hasPermi('system:like:remove')")
+
     @Log(title = "点赞", businessType = BusinessType.DELETE)
     @DeleteMapping("/{likeIds}")
     public AjaxResult remove(@PathVariable Long[] likeIds)
@@ -99,7 +99,7 @@ public class ForumLikeController extends BaseController
     /**
      * 点赞/取消点赞切换
      */
-    @PreAuthorize("@ss.hasAnyRoles('common')") // 只要是登录用户即可
+
     @Log(title = "点赞", businessType = BusinessType.INSERT)
     @PostMapping("/toggle")
     public AjaxResult toggle(@RequestBody ForumLike forumLike)

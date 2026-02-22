@@ -31,7 +31,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 查询金币流水列表
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumCoinsTransaction forumCoinsTransaction)
     {
@@ -43,7 +43,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 导出金币流水列表
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:export')")
+
     @Log(title = "金币流水", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumCoinsTransaction forumCoinsTransaction)
@@ -56,7 +56,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 获取金币流水详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:query')")
+
     @GetMapping(value = "/{transactionId}")
     public AjaxResult getInfo(@PathVariable("transactionId") Long transactionId)
     {
@@ -66,7 +66,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 新增金币流水
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:add')")
+
     @Log(title = "金币流水", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumCoinsTransaction forumCoinsTransaction)
@@ -77,7 +77,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 修改金币流水
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:edit')")
+
     @Log(title = "金币流水", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumCoinsTransaction forumCoinsTransaction)
@@ -88,7 +88,7 @@ public class ForumCoinsTransactionController extends BaseController
     /**
      * 删除金币流水
      */
-    @PreAuthorize("@ss.hasPermi('system:transaction:remove')")
+
     @Log(title = "金币流水", businessType = BusinessType.DELETE)
     @DeleteMapping("/{transactionIds}")
     public AjaxResult remove(@PathVariable Long[] transactionIds)

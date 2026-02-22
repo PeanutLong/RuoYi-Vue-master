@@ -7,6 +7,7 @@ import com.ruoyi.forum.domain.ForumPost;
 import com.ruoyi.forum.mapper.ForumPostMapper;
 import com.ruoyi.forum.service.IForumBountyService;
 import com.ruoyi.forum.service.IForumPostService;
+import com.ruoyi.forum.service.IForumUserCoinsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,9 @@ public class ForumPostServiceImpl implements IForumPostService
 
     @Autowired
     private IForumBountyService forumBountyService;
+
+    @Autowired
+    private IForumUserCoinsService userCoinsService;
 
     /**
      * 查询帖子
@@ -82,13 +86,13 @@ public class ForumPostServiceImpl implements IForumPostService
             bounty.setCoins(forumPost.getBountyCoins());
             bounty.setStatus("0"); // 0=待解决
 
-             //设置过期时间，例如默认7天后过期
+             //设置过期时间，默认30天后过期
              bounty.setExpireTime(DateUtils.addDays(DateUtils.getNowDate(), 30));
 
             forumBountyService.insertForumBounty(bounty);
 
-            // TODO: 在这里调用 UserCoinsService 扣除用户金币余额
-            // userCoinsService.deductCoins(forumPost.getUserId(), forumPost.getBountyCoins());
+            //扣除用户金币余额
+             userCoinsService.deductCoins(forumPost.getUserId(), forumPost.getBountyCoins());
         }
 
         return rows;

@@ -31,7 +31,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 查询回复图片列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumReplyImage forumReplyImage)
     {
@@ -43,7 +43,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 导出回复图片列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:export')")
+
     @Log(title = "回复图片", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumReplyImage forumReplyImage)
@@ -56,7 +56,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 获取回复图片详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:query')")
+
     @GetMapping(value = "/{imageId}")
     public AjaxResult getInfo(@PathVariable("imageId") Long imageId)
     {
@@ -66,7 +66,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 新增回复图片
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:add')")
+
     @Log(title = "回复图片", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumReplyImage forumReplyImage)
@@ -77,7 +77,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 修改回复图片
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:edit')")
+
     @Log(title = "回复图片", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumReplyImage forumReplyImage)
@@ -88,7 +88,7 @@ public class ForumReplyImageController extends BaseController
     /**
      * 删除回复图片
      */
-    @PreAuthorize("@ss.hasPermi('forum:image:remove')")
+
     @Log(title = "回复图片", businessType = BusinessType.DELETE)
     @DeleteMapping("/{imageIds}")
     public AjaxResult remove(@PathVariable Long[] imageIds)

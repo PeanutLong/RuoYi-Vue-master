@@ -1,69 +1,77 @@
 <template>
-  <div class="app-container">
-    <el-card shadow="never" class="create-card">
-      <div slot="header" class="clearfix">
-        <span>发布新帖子</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="handleBack">返回列表</el-button>
-      </div>
+  <div>
+    <forum-banner/>
+    <div class="app-container">
+      <el-card shadow="never" class="create-card">
+        <div slot="header" class="clearfix">
+          <span>发布新帖子</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="handleBack">返回列表</el-button>
+        </div>
 
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入引人注目的标题" maxlength="100" show-word-limit />
-        </el-form-item>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="form.title" placeholder="请输入引人注目的标题" maxlength="100" show-word-limit />
+          </el-form-item>
 
-        <el-form-item label="板块" prop="boardId">
-          <el-select v-model="form.boardId" placeholder="请选择所属板块" style="width: 100%">
-            <el-option label="技术交流" :value="1"></el-option>
-            <el-option label="生活闲谈" :value="2"></el-option>
-          </el-select>
-        </el-form-item>
+          <el-form-item label="板块" prop="boardId">
+            <el-select v-model="form.boardId" placeholder="请选择所属板块" style="width: 100%" @change="handleBoardChange">
+              <el-option
+                v-for="item in boardOptions"
+                :key="item.boardId"
+                :label="item.boardName"
+                :value="item.boardId">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-        <el-form-item label="类型" prop="postType">
-          <el-radio-group v-model="form.postType">
-            <el-radio label="0">普通讨论</el-radio>
-            <el-radio label="1">求助悬赏</el-radio>
-          </el-radio-group>
-        </el-form-item>
+          <!-- 自动根据板块显示悬赏输入框，无需手动选择类型 -->
+          <el-form-item v-if="form.postType === '1'" label="悬赏金币" prop="bountyCoins">
+            <el-input-number
+              v-model="form.bountyCoins"
+              :min="1"
+              :max="1000"
+              label="输入悬赏金额"
+            ></el-input-number>
+            <span class="tip-text">您当前拥有金币: {{ userCoins }}</span>
+          </el-form-item>
 
-        <el-form-item v-if="form.postType === '1'" label="悬赏金币" prop="bountyCoins">
-          <el-input-number
-            v-model="form.bountyCoins"
-            :min="1"
-            :max="1000"
-            label="输入悬赏金额"
-          ></el-input-number>
-          <span class="tip-text">您当前拥有金币: {{ userCoins }} (这里需对接实际余额)</span>
-        </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <editor v-model="form.content" :min-height="300" />
+          </el-form-item>
 
-        <el-form-item label="内容" prop="content">
-          <editor v-model="form.content" :min-height="300" />
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" :loading="submitLoading" @click="submitForm">立即发布</el-button>
-          <el-button @click="handleBack">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+          <el-form-item>
+            <el-button type="primary" :loading="submitLoading" @click="submitForm">立即发布</el-button>
+            <el-button @click="handleBack">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
   </div>
+
 </template>
 
 <script>
 import { addPost } from "@/api/forum/post";
-import Editor from '@/components/Editor'; // 引入 RuoYi 自带的富文本组件
+import { listBoard } from "@/api/forum/board";
+import { getMyCoins } from "@/api/forum/coins";
+import Editor from '@/components/Editor';
+import ForumBanner from '@/components/Banner';
 
 export default {
   name: "ForumPostCreate",
-  components: { Editor },
+  components: { Editor,ForumBanner },
   data() {
     return {
       submitLoading: false,
-      userCoins: 100, // 模拟用户余额，建议从 Vuex 或 API 获取
+      boardOptions: [],
+      userCoins: 0,
+      // 求助板块ID列表（根据实际数据修改）
+      helpBoardIds: [2],  // 示例中 ID=2 为求助区，如有多个可添加
       form: {
         title: undefined,
         boardId: undefined,
-        postType: "0", // 默认普通帖
-        bountyCoins: 10, // 默认悬赏
+        postType: "0",     // 默认为普通讨论
+        bountyCoins: 10,
         content: ""
       },
       rules: {
@@ -76,47 +84,79 @@ export default {
         ],
         content: [
           { required: true, message: "帖子内容不能为空", trigger: "blur" }
-        ],
-        bountyCoins: [
-          { required: true, message: "悬赏金额不能为空", trigger: "blur" }
         ]
       }
     };
   },
   created() {
-    // 获取路由参数中的 boardId
     const boardId = this.$route.query.boardId;
     if (boardId) {
-      // 转为数字类型，防止 select 组件回显失效
       this.form.boardId = parseInt(boardId);
     }
+    this.fetchBoardList().then(() => {
+      // 如果初始有板块ID，立即触发类型设置
+      if (this.form.boardId) {
+        this.handleBoardChange(this.form.boardId);
+      }
+    });
+    this.fetchUserCoins();
   },
   methods: {
-    /** 提交按钮 */
+    fetchBoardList() {
+      return listBoard().then(response => {
+        // 根据后端实际返回结构调整（若依框架通常返回 { rows: [...] }）
+        this.boardOptions = response.rows || [];
+      });
+    },
+    fetchUserCoins() {
+      getMyCoins().then(response => {
+        if (response.code === 200) {
+          // 根据您提供的接口数据，使用 availableCoins 字段
+          this.userCoins = response.data.availableCoins || 0;
+        }
+      });
+    },
+    // 板块切换时自动设置帖子类型
+    handleBoardChange(boardId) {
+      // 判断当前选择的板块是否在求助板块列表中
+      const isHelp = this.helpBoardIds.includes(boardId);
+      this.form.postType = isHelp ? '1' : '0';
+      // 如果是求助区且未设置悬赏金额，给个默认值
+      if (isHelp && !this.form.bountyCoins) {
+        this.form.bountyCoins = 10;
+      }
+    },
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // 额外的逻辑校验
-          if (this.form.postType === '1' && this.form.bountyCoins > this.userCoins) {
-            this.$modal.msgError("您的金币余额不足！");
-            return;
+          // 悬赏帖额外校验
+          if (this.form.postType === '1') {
+            if (!this.form.bountyCoins) {
+              this.$modal.msgError("悬赏金额不能为空");
+              return;
+            }
+            if (this.form.bountyCoins > this.userCoins) {
+              this.$modal.msgError("您的金币余额不足！");
+              return;
+            }
           }
 
           this.submitLoading = true;
           addPost(this.form).then(response => {
-            this.$modal.msgSuccess("发布成功");
-            this.handleBack();
+            if (response.code === 200) {
+              this.$modal.msgSuccess("发布成功");
+              const postId = response.data;  // 确认这是帖子ID
+              this.$router.push(`/forum/post/detail/${postId}`);
+            }
           }).finally(() => {
             this.submitLoading = false;
           });
         }
       });
     },
-    /** 返回 */
     handleBack() {
-      // 返回上一页，或者指定跳转到板块页
       if (this.form.boardId) {
-        this.$router.push({ path: '/forum/post/list', query: { boardId: this.form.boardId } });
+        this.$router.push({path: '/forum/post/list', query: {boardId: this.form.boardId}});
       } else {
         this.$router.go(-1);
       }
@@ -130,6 +170,7 @@ export default {
   max-width: 1000px;
   margin: 0 auto;
 }
+
 .tip-text {
   font-size: 12px;
   color: #909399;

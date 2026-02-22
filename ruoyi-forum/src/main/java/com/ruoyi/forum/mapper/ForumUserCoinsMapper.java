@@ -1,6 +1,7 @@
 package com.ruoyi.forum.mapper;
 
 import com.ruoyi.forum.domain.ForumUserCoins;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +62,7 @@ public interface ForumUserCoinsMapper
     public int deleteForumUserCoinsByCoinsIds(Long[] coinsIds);
 
     ForumUserCoins selectCoinsByUserId(Long userId);
+
+    int deductCoins(@Param("userId") Long userId, @Param("bountyCoins") Long bountyCoins);
+
 }

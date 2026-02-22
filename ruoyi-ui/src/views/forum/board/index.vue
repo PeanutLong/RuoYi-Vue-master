@@ -1,71 +1,77 @@
 <template>
-  <div class="app-container">
-    <div class="board-header">
-      <div class="header-content">
-        <h1>探索社区板块</h1>
-        <p>找到你感兴趣的圈子，开始交流与分享</p>
-        <div class="search-bar">
-          <el-input
-            v-model="queryParams.boardName"
-            placeholder="搜索你感兴趣的板块..."
-            prefix-icon="el-icon-search"
-            clearable
-            @keyup.enter.native="handleQuery"
-            class="search-input"
-          >
-            <el-button slot="append" type="primary" @click="handleQuery">搜索</el-button>
-          </el-input>
+  <div>
+    <forum-banner/>
+    <div class="app-container">
+      <div class="board-header">
+        <div class="header-content">
+          <h1>探索社区板块</h1>
+          <p>找到你感兴趣的圈子，开始交流与分享</p>
+          <div class="search-bar">
+            <el-input
+              v-model="queryParams.boardName"
+              placeholder="搜索你感兴趣的板块..."
+              prefix-icon="el-icon-search"
+              clearable
+              @keyup.enter.native="handleQuery"
+              class="search-input"
+            >
+              <el-button slot="append" type="primary" @click="handleQuery">搜索</el-button>
+            </el-input>
+          </div>
         </div>
       </div>
-    </div>
 
-    <el-row :gutter="25" v-loading="loading" class="board-grid">
-      <el-col
-        :xs="24" :sm="12" :md="8" :lg="6"
-        v-for="board in boardList"
-        :key="board.boardId"
-        class="mb20"
-      >
-        <el-card class="board-user-card" shadow="hover" @click.native="goToBoardDetail(board.boardId)">
-          <div class="board-cover" :style="{ background: getRandomGradient(board.boardId) }">
-            <i class="el-icon-collection-tag"></i>
-          </div>
+      <el-row :gutter="25" v-loading="loading" class="board-grid">
+        <el-col
+          :xs="24" :sm="12" :md="8" :lg="6"
+          v-for="board in boardList"
+          :key="board.boardId"
+          class="mb20"
+        >
+          <el-card class="board-user-card" shadow="hover" @click.native="goToBoardDetail(board.boardId)">
+            <div class="board-cover" :style="{ background: getRandomGradient(board.boardId) }">
+              <i class="el-icon-collection-tag"></i>
+            </div>
 
-          <div class="board-body">
-            <h3 class="board-name">{{ board.boardName }}</h3>
-            <p class="board-desc">{{ board.description || '这个板块暂时还没有介绍哦~' }}</p>
+            <div class="board-body">
+              <h3 class="board-name">{{ board.boardName }}</h3>
+              <p class="board-desc">{{ board.description || '这个板块暂时还没有介绍哦~' }}</p>
 
-            <div class="board-footer">
+              <div class="board-footer">
               <span class="tag-status" v-if="board.status === '0'">
                 <i class="el-icon-circle-check"></i> 活跃中
               </span>
-              <el-button type="text" class="enter-btn">进入浏览 <i class="el-icon-arrow-right"></i></el-button>
+                <el-button type="text" class="enter-btn">进入浏览 <i class="el-icon-arrow-right"></i></el-button>
+              </div>
             </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
-    <el-empty v-if="!loading && boardList.length === 0" description="没有找到匹配的板块"></el-empty>
+      <el-empty v-if="!loading && boardList.length === 0" description="没有找到匹配的板块"></el-empty>
 
-    <div class="pagination-container">
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        layout="prev, pager, next"
-        @pagination="getList"
-      />
+      <div class="pagination-container">
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          layout="prev, pager, next"
+          @pagination="getList"
+        />
+      </div>
     </div>
   </div>
+
 </template>
 
 <script>
 import { listBoard } from "@/api/forum/board";
+import ForumBanner from '@/components/Banner';
 
 export default {
   name: "ForumBoardUser",
+  components: { ForumBanner },
   data() {
     return {
       loading: true,

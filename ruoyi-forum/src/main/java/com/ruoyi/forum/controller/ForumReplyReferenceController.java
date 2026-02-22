@@ -31,7 +31,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 查询回复引用列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumReplyReference forumReplyReference)
     {
@@ -43,7 +43,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 导出回复引用列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:export')")
+
     @Log(title = "回复引用", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumReplyReference forumReplyReference)
@@ -56,7 +56,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 获取回复引用详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:query')")
+
     @GetMapping(value = "/{referenceId}")
     public AjaxResult getInfo(@PathVariable("referenceId") Long referenceId)
     {
@@ -66,7 +66,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 新增回复引用
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:add')")
+
     @Log(title = "回复引用", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumReplyReference forumReplyReference)
@@ -77,7 +77,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 修改回复引用
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:edit')")
+
     @Log(title = "回复引用", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumReplyReference forumReplyReference)
@@ -88,7 +88,7 @@ public class ForumReplyReferenceController extends BaseController
     /**
      * 删除回复引用
      */
-    @PreAuthorize("@ss.hasPermi('forum:reference:remove')")
+
     @Log(title = "回复引用", businessType = BusinessType.DELETE)
     @DeleteMapping("/{referenceIds}")
     public AjaxResult remove(@PathVariable Long[] referenceIds)

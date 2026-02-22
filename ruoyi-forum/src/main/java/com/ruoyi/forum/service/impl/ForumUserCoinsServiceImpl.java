@@ -98,4 +98,9 @@ public class ForumUserCoinsServiceImpl implements IForumUserCoinsService
     public ForumUserCoins selectCoinsByUserId(Long userId) {
         return forumUserCoinsMapper.selectCoinsByUserId(userId);
     }
+
+    @Override
+    public int deductCoins(Long userId, Long bountyCoins) {
+        return forumUserCoinsMapper.deductCoins(userId,bountyCoins);
+    }
 }

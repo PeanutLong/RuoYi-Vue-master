@@ -61,4 +61,7 @@ public interface IForumUserCoinsService
     public int deleteForumUserCoinsByCoinsId(Long coinsId);
 
     ForumUserCoins selectCoinsByUserId(Long userId);
+
+    int deductCoins(Long userId, Long bountyCoins);
+
 }

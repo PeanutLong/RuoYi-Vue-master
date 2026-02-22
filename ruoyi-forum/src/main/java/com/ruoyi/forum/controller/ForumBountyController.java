@@ -14,6 +14,7 @@ import com.ruoyi.forum.service.IForumBountyService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 悬赏Controller
@@ -31,7 +32,7 @@ public class ForumBountyController extends BaseController
     /**
      * 查询悬赏列表
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumBounty forumBounty)
     {
@@ -43,7 +44,7 @@ public class ForumBountyController extends BaseController
     /**
      * 导出悬赏列表
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:export')")
+
     @Log(title = "悬赏", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumBounty forumBounty)
@@ -56,7 +57,7 @@ public class ForumBountyController extends BaseController
     /**
      * 获取悬赏详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:query')")
+
     @GetMapping(value = "/{bountyId}")
     public AjaxResult getInfo(@PathVariable("bountyId") Long bountyId)
     {
@@ -66,7 +67,7 @@ public class ForumBountyController extends BaseController
     /**
      * 新增悬赏
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:add')")
+
     @Log(title = "悬赏", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumBounty forumBounty)
@@ -77,7 +78,7 @@ public class ForumBountyController extends BaseController
     /**
      * 修改悬赏
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:edit')")
+
     @Log(title = "悬赏", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumBounty forumBounty)
@@ -88,11 +89,26 @@ public class ForumBountyController extends BaseController
     /**
      * 删除悬赏
      */
-    @PreAuthorize("@ss.hasPermi('system:bounty:remove')")
+
     @Log(title = "悬赏", businessType = BusinessType.DELETE)
     @DeleteMapping("/{bountyIds}")
     public AjaxResult remove(@PathVariable Long[] bountyIds)
     {
         return toAjax(forumBountyService.deleteForumBountyByBountyIds(bountyIds));
+    }
+
+    @Log(title = "悬赏采纳", businessType = BusinessType.UPDATE)
+    @PostMapping("/accept")
+    public AjaxResult acceptAnswer(@RequestBody Map<String, Long> params)
+    {
+        Long postId = params.get("postId");
+        Long replyId = params.get("replyId");
+        Long replyUserId = params.get("replyUserId");
+
+        if (postId == null || replyId == null || replyUserId == null) {
+            return AjaxResult.error("参数不完整");
+        }
+
+        return toAjax(forumBountyService.acceptAnswer(postId, replyId, replyUserId));
     }
 }

@@ -31,7 +31,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 查询帖子标签关联列表
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumPostTag forumPostTag)
     {
@@ -43,7 +43,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 导出帖子标签关联列表
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:export')")
+
     @Log(title = "帖子标签关联", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumPostTag forumPostTag)
@@ -56,7 +56,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 获取帖子标签关联详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -66,7 +66,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 新增帖子标签关联
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:add')")
+
     @Log(title = "帖子标签关联", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumPostTag forumPostTag)
@@ -77,7 +77,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 修改帖子标签关联
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:edit')")
+
     @Log(title = "帖子标签关联", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumPostTag forumPostTag)
@@ -88,7 +88,7 @@ public class ForumPostTagController extends BaseController
     /**
      * 删除帖子标签关联
      */
-    @PreAuthorize("@ss.hasPermi('system:tag:remove')")
+
     @Log(title = "帖子标签关联", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

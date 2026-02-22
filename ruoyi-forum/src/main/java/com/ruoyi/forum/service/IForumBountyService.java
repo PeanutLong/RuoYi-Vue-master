@@ -59,4 +59,7 @@ public interface IForumBountyService
      * @return 结果
      */
     public int deleteForumBountyByBountyId(Long bountyId);
+
+    int acceptAnswer(Long postId, Long replyId, Long replyUserId);
+
 }

@@ -1,157 +1,162 @@
 <template>
-  <div class="app-container">
-    <div class="page-header">
-      <h2>论坛社区</h2>
-      <p class="page-subtitle">发现精彩内容，分享您的见解，与数千名开发者共同成长</p>
-    </div>
+  <div>
+    <forum-banner />
+    <div class="app-container">
+      <div class="page-header">
+        <h2>屌茅社区</h2>
+        <p class="page-subtitle">飞天屌茅，发力无边</p>
+      </div>
 
-    <el-row :gutter="20" class="forum-main">
-      <el-col :span="24">
-        <el-card class="board-card" shadow="hover">
-          <div class="board-card-content">
-            <div class="board-icon">
-              <div class="icon-wrapper">
-                <i class="el-icon-monitor"></i>
+      <el-row :gutter="20" class="forum-main">
+        <el-col :span="24">
+          <el-card class="board-card" shadow="hover">
+            <div class="board-card-content">
+              <div class="board-icon">
+                <div class="icon-wrapper">
+                  <i class="el-icon-monitor"></i>
+                </div>
+              </div>
+              <div class="board-info">
+                <h3>探索所有板块</h3>
+                <p class="board-description">浏览论坛的所有分类板块，找到您感兴趣的技术领域或生活话题</p>
+                <div class="board-stats">
+                  <span><i class="el-icon-folder"></i> <b>{{ boardCount }}</b> 个板块</span>
+                  <span><i class="el-icon-document"></i> <b>{{ postCount }}</b> 篇帖子</span>
+                </div>
+              </div>
+              <div class="board-action">
+                <el-button
+                  type="primary"
+                  size="large"
+                  @click="goToBoards"
+                  icon="el-icon-connection"
+                  :loading="loading"
+                >
+                  立即进入
+                </el-button>
               </div>
             </div>
-            <div class="board-info">
-              <h3>探索所有板块</h3>
-              <p class="board-description">浏览论坛的所有分类板块，找到您感兴趣的技术领域或生活话题</p>
-              <div class="board-stats">
-                <span><i class="el-icon-folder"></i> <b>{{ boardCount }}</b> 个板块</span>
-                <span><i class="el-icon-document"></i> <b>{{ postCount }}</b> 篇帖子</span>
-                <span><i class="el-icon-chat-dot-round"></i> <b>{{ replyCount }}</b> 条回复</span>
-              </div>
-            </div>
-            <div class="board-action">
-              <el-button
-                type="primary"
-                size="large"
-                @click="goToBoards"
-                icon="el-icon-connection"
-                :loading="loading"
-              >
-                立即进入
-              </el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
-    <el-row :gutter="20">
-      <el-col :sm="24" :md="16">
-        <el-card class="hot-card" shadow="never">
-          <div slot="header" class="clearfix">
+      <el-row :gutter="20">
+        <el-col :sm="24" :md="16">
+          <el-card class="hot-card" shadow="never">
+            <div slot="header" class="clearfix">
             <span class="card-title">
               <i class="el-icon-medal" style="color: #f56c6c;"></i> 热门排行
             </span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="handleQuickLink({path: '/forum/post/hot'})">查看更多</el-button>
-          </div>
-          <div v-loading="hotLoading" class="hot-list-container">
-            <div
-              v-for="(post, index) in hotPostList"
-              :key="post.postId"
-              class="hot-item"
-              @click="handlePostClick(post.postId)"
-            >
-              <div class="hot-rank" :class="index < 3 ? 'rank-' + (index + 1) : ''">
-                {{ index + 1 }}
-              </div>
-              <div class="hot-content">
-                <div class="hot-item-title">{{ post.title }}</div>
-                <div class="hot-item-meta">
-                  <span class="author"><i class="el-icon-user"></i> {{ post.createBy }}</span>
-                  <span><i class="el-icon-view"></i> {{ post.viewCount || 0 }}</span>
-                  <span><i class="el-icon-chat-line-square"></i> {{ post.commentCount || 0 }}</span>
-                  <span class="time">{{ parseTime(post.createTime, '{m}-{d}') }}</span>
+              <el-button style="float: right; padding: 3px 0" type="text" @click="handleQuickLink({path: '/forum/post/hot'})">查看更多</el-button>
+            </div>
+            <div v-loading="hotLoading" class="hot-list-container">
+              <div
+                v-for="(post, index) in hotPostList"
+                :key="post.postId"
+                class="hot-item"
+                @click="handlePostClick(post.postId)"
+              >
+                <div class="hot-rank" :class="index < 3 ? 'rank-' + (index + 1) : ''">
+                  {{ index + 1 }}
+                </div>
+                <div class="hot-content">
+                  <div class="hot-item-title">{{ post.title }}</div>
+                  <div class="hot-item-meta">
+                    <span class="author"><i class="el-icon-user"></i> {{ post.createBy }}</span>
+                    <span><i class="el-icon-view"></i> {{ post.viewCount || 0 }}</span>
+                    <span><i class="el-icon-chat-line-square"></i> {{ post.commentCount || 0 }}</span>
+                    <span class="time">{{ parseTime(post.createTime, '{m}-{d}') }}</span>
+                  </div>
                 </div>
               </div>
+              <el-empty v-if="!hotLoading && hotPostList.length === 0" description="暂无热门动态" :image-size="80"></el-empty>
             </div>
-            <el-empty v-if="!hotLoading && hotPostList.length === 0" description="暂无热门动态" :image-size="80"></el-empty>
-          </div>
-        </el-card>
-      </el-col>
+          </el-card>
+        </el-col>
 
-      <el-col :sm="24" :md="8">
+        <el-col :sm="24" :md="8">
 
-        <el-card v-if="isLoggedIn" class="user-info-card" shadow="hover">
-          <div class="user-profile-wrapper" @click="goToProfile">
-            <div class="avatar-box">
-              <el-avatar :size="60" :src="avatar">
-                <img src="@/assets/images/profile.jpg"/>
-              </el-avatar>
-            </div>
-            <div class="user-info-text">
-              <div class="welcome-text">欢迎回来</div>
-              <div class="user-name">{{ name || '社区用户' }}</div>
-            </div>
-
-            <div class="check-in-status">
-              <el-tag v-if="hasCheckedIn" type="success" size="mini" effect="dark">
-                <i class="el-icon-check"></i> 已签到
-              </el-tag>
-            </div>
-          </div>
-
-          <div class="user-quick-actions">
-            <el-button type="text" icon="el-icon-user" @click="goToProfile">个人中心</el-button>
-            <el-divider direction="vertical"></el-divider>
-
-            <el-button
-              type="text"
-              :icon="hasCheckedIn ? 'el-icon-circle-check' : 'el-icon-date'"
-              :class="{ 'signed-in-btn': hasCheckedIn }"
-              :disabled="hasCheckedIn"
-              @click="handleCheckIn"
-              :loading="checkInLoading"
-            >
-              {{ hasCheckedIn ? '今日已签' : '每日签到' }}
-            </el-button>
-
-            <el-divider direction="vertical"></el-divider>
-            <el-button type="text" icon="el-icon-coin">我的金币</el-button>
-          </div>
-        </el-card>
-
-        <el-row :gutter="15">
-          <el-col :span="12" v-for="item in quickLinks" :key="item.id">
-            <el-card class="quick-card" shadow="hover" @click.native="handleQuickLink(item)">
-              <div class="quick-card-content">
-                <i :class="item.icon" class="quick-icon"></i>
-                <div class="quick-title">{{ item.title }}</div>
+          <el-card v-if="isLoggedIn" class="user-info-card" shadow="hover">
+            <div class="user-profile-wrapper" @click="goToProfile">
+              <div class="avatar-box">
+                <el-avatar :size="60" :src="avatar">
+                  <img src="@/assets/images/profile.jpg"/>
+                </el-avatar>
               </div>
-            </el-card>
-          </el-col>
-        </el-row>
+              <div class="user-info-text">
+                <div class="welcome-text">欢迎回来</div>
+                <div class="user-name">{{ name || '社区用户' }}</div>
+              </div>
 
-        <el-card v-if="!isLoggedIn" class="login-promo-card" shadow="never">
-          <h4>加入我们的社区</h4>
-          <p>登录后即可发帖、评论、点赞，开启你的互动之旅。</p>
-          <el-button type="primary" block @click="handleLogin" style="width: 100%">立即登录 / 注册</el-button>
-        </el-card>
+              <div class="check-in-status">
+                <el-tag v-if="hasCheckedIn" type="success" size="mini" effect="dark">
+                  <i class="el-icon-check"></i> 已签到
+                </el-tag>
+              </div>
+            </div>
 
-      </el-col>
-    </el-row>
+            <div class="user-quick-actions">
+              <el-button type="text" icon="el-icon-user" @click="goToProfile">个人中心</el-button>
+              <el-divider direction="vertical"></el-divider>
 
-    <el-alert
-      v-if="isLoggedIn"
-      title="小贴士：文明发帖，共建和谐社区。"
-      type="success"
-      show-icon
-      :closable="false"
-      style="margin-top: 20px;"
-    />
+              <el-button
+                type="text"
+                :icon="hasCheckedIn ? 'el-icon-circle-check' : 'el-icon-date'"
+                :class="{ 'signed-in-btn': hasCheckedIn }"
+                :disabled="hasCheckedIn"
+                @click="handleCheckIn"
+                :loading="checkInLoading"
+              >
+                {{ hasCheckedIn ? '今日已签' : '每日签到' }}
+              </el-button>
+
+              <el-divider direction="vertical"></el-divider>
+              <el-button type="text" icon="el-icon-coin">我的金币</el-button>
+            </div>
+          </el-card>
+
+          <el-row :gutter="15">
+            <el-col :span="12" v-for="item in quickLinks" :key="item.id">
+              <el-card class="quick-card" shadow="hover" @click.native="handleQuickLink(item)">
+                <div class="quick-card-content">
+                  <i :class="item.icon" class="quick-icon"></i>
+                  <div class="quick-title">{{ item.title }}</div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+
+          <el-card v-if="!isLoggedIn" class="login-promo-card" shadow="never">
+            <h4>加入我们的社区</h4>
+            <p>登录后即可发帖、评论、点赞，开启你的互动之旅。</p>
+            <el-button type="primary" block @click="handleLogin" style="width: 100%">立即登录 / 注册</el-button>
+          </el-card>
+
+        </el-col>
+      </el-row>
+
+      <el-alert
+        v-if="isLoggedIn"
+        title="小贴士：文明发帖，共建和谐社区。"
+        type="success"
+        show-icon
+        :closable="false"
+        style="margin-top: 20px;"
+      />
+    </div>
   </div>
+
 </template>
 
 <script>
 import { getHotThreads } from "@/api/forum/post";
 import { addCheckIn, listCheckIn } from "@/api/forum/in"; // 1. 引入签到API
 import { mapGetters } from "vuex";
+import ForumBanner from '@/components/Banner';
 
 export default {
   name: 'ForumIndex',
+  components: { ForumBanner },
   computed: {
     ...mapGetters([
       'avatar',
@@ -164,7 +169,6 @@ export default {
       // 统计数据
       boardCount: 0,
       postCount: 0,
-      replyCount: 0,
       loading: false,
       // 热门列表
       hotLoading: false,

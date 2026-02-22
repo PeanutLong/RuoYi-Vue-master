@@ -23,13 +23,15 @@
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
         <result property="bountyCoins" column="bounty_coins"/>
+        <result property="acceptedAnswerId" column="accepted_answer_id"/>
     </resultMap>
 
     <sql id="selectForumPostVo">
         select p.post_id, p.board_id, p.user_id, p.title, p.content, p.post_type,
                p.view_count, p.like_count, p.comment_count, p.is_top, p.is_essence,
                p.status, p.create_by, p.create_time, p.update_by, p.update_time, p.remark,
-               b.coins as bounty_coins
+               b.coins as bounty_coins,
+               b.accepted_answer_id as accepted_answer_id
         from forum_post p
                  left join forum_bounty b on p.post_id = b.post_id
     </sql>

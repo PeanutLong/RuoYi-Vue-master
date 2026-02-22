@@ -30,7 +30,7 @@ public class ForumBoardController extends BaseController
     /**
      * 查询论坛板块列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:board:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumBoard forumBoard)
     {
@@ -42,7 +42,7 @@ public class ForumBoardController extends BaseController
     /**
      * 导出论坛板块列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:board:export')")
+
     @Log(title = "论坛板块", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumBoard forumBoard)
@@ -55,7 +55,7 @@ public class ForumBoardController extends BaseController
     /**
      * 获取论坛板块详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:board:query')")
+
     @GetMapping(value = "/{boardId}")
     public AjaxResult getInfo(@PathVariable("boardId") Long boardId)
     {
@@ -87,7 +87,7 @@ public class ForumBoardController extends BaseController
     /**
      * 删除论坛板块
      */
-    @PreAuthorize("@ss.hasPermi('system:board:remove')")
+    @PreAuthorize("@ss.hasPermi('forum:board:remove')")
     @Log(title = "论坛板块", businessType = BusinessType.DELETE)
     @DeleteMapping("/{boardIds}")
     public AjaxResult remove(@PathVariable Long[] boardIds)

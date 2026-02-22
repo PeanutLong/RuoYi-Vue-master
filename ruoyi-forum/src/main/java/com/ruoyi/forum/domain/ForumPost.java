@@ -18,6 +18,17 @@ public class ForumPost extends BaseEntity
     /** 悬赏金额（非数据库字段，仅用于传参） */
     private Long bountyCoins;
 
+    /** 接受的答案ID （非数据库字段）*/
+    private Long acceptedAnswerId;
+
+    public Long getAcceptedAnswerId() {
+        return acceptedAnswerId;
+    }
+
+    public void setAcceptedAnswerId(Long acceptedAnswerId) {
+        this.acceptedAnswerId = acceptedAnswerId;
+    }
+
     /** 帖子ID */
     private Long postId;
 

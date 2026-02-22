@@ -32,7 +32,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 查询用户金币列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumUserCoins forumUserCoins)
     {
@@ -44,7 +44,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 导出用户金币列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:export')")
+
     @Log(title = "用户金币", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumUserCoins forumUserCoins)
@@ -57,7 +57,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 获取用户金币详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:query')")
+
     @GetMapping(value = "/{coinsId}")
     public AjaxResult getInfo(@PathVariable("coinsId") Long coinsId)
     {
@@ -67,7 +67,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 新增用户金币
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:add')")
+
     @Log(title = "用户金币", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumUserCoins forumUserCoins)
@@ -78,7 +78,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 修改用户金币
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:edit')")
+
     @Log(title = "用户金币", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumUserCoins forumUserCoins)
@@ -89,7 +89,7 @@ public class ForumUserCoinsController extends BaseController
     /**
      * 删除用户金币
      */
-    @PreAuthorize("@ss.hasPermi('forum:coins:remove')")
+
     @Log(title = "用户金币", businessType = BusinessType.DELETE)
     @DeleteMapping("/{coinsIds}")
     public AjaxResult remove(@PathVariable Long[] coinsIds)

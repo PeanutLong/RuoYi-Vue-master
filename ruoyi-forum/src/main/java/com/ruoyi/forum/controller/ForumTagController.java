@@ -31,7 +31,7 @@ public class ForumTagController extends BaseController
     /**
      * 查询标签列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ForumTag forumTag)
     {
@@ -43,7 +43,7 @@ public class ForumTagController extends BaseController
     /**
      * 导出标签列表
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:export')")
+
     @Log(title = "标签", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ForumTag forumTag)
@@ -56,7 +56,7 @@ public class ForumTagController extends BaseController
     /**
      * 获取标签详细信息
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:query')")
+
     @GetMapping(value = "/{tagId}")
     public AjaxResult getInfo(@PathVariable("tagId") Long tagId)
     {
@@ -66,7 +66,7 @@ public class ForumTagController extends BaseController
     /**
      * 新增标签
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:add')")
+
     @Log(title = "标签", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ForumTag forumTag)
@@ -77,7 +77,7 @@ public class ForumTagController extends BaseController
     /**
      * 修改标签
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:edit')")
+
     @Log(title = "标签", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ForumTag forumTag)
@@ -88,7 +88,7 @@ public class ForumTagController extends BaseController
     /**
      * 删除标签
      */
-    @PreAuthorize("@ss.hasPermi('forum:tag:remove')")
+
     @Log(title = "标签", businessType = BusinessType.DELETE)
     @DeleteMapping("/{tagIds}")
     public AjaxResult remove(@PathVariable Long[] tagIds)

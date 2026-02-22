@@ -1,97 +1,103 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="18" :xs="24">
-        <el-card shadow="never" class="list-container">
-          <div slot="header" class="list-header">
-            <el-tabs v-model="activeTab" @tab-click="handleTabChange">
-              <el-tab-pane label="全部" name="all"></el-tab-pane>
-              <el-tab-pane label="精华" name="essence"></el-tab-pane>
-            </el-tabs>
-            <div class="header-search">
-              <el-input
-                v-model="queryParams.title"
-                placeholder="搜索本板块帖子"
-                size="small"
-                prefix-icon="el-icon-search"
-                clearable
-                @keyup.enter.native="handleQuery"
-              />
+  <div>
+    <forum-banner/>
+    <div class="app-container">
+      <el-row :gutter="20">
+        <el-col :span="18" :xs="24">
+          <el-card shadow="never" class="list-container">
+            <div slot="header" class="list-header">
+              <el-tabs v-model="activeTab" @tab-click="handleTabChange">
+                <el-tab-pane label="全部" name="all"></el-tab-pane>
+                <el-tab-pane label="精华" name="essence"></el-tab-pane>
+              </el-tabs>
+              <div class="header-search">
+                <el-input
+                  v-model="queryParams.title"
+                  placeholder="搜索本板块帖子"
+                  size="small"
+                  prefix-icon="el-icon-search"
+                  clearable
+                  @keyup.enter.native="handleQuery"
+                />
+              </div>
             </div>
-          </div>
 
-          <div v-loading="loading">
-            <div v-for="item in postList" :key="item.postId" class="post-item">
-              <div class="post-main">
-                <div class="post-title-row">
-                  <el-tag v-if="item.isTop === '1'" size="mini" type="danger" effect="dark">置顶</el-tag>
-                  <el-tag v-if="item.isEssence === '1'" size="mini" type="warning" effect="dark">精华</el-tag>
+            <div v-loading="loading">
+              <div v-for="item in postList" :key="item.postId" class="post-item">
+                <div class="post-main">
+                  <div class="post-title-row">
+                    <el-tag v-if="item.isTop === '1'" size="mini" type="danger" effect="dark">置顶</el-tag>
+                    <el-tag v-if="item.isEssence === '1'" size="mini" type="warning" effect="dark">精华</el-tag>
 
-                  <template v-if="item.postType === '1'">
+                    <template v-if="item.postType === '1'">
                     <span class="bounty-wrapper">
                       <i class="el-icon-coin gold-icon"></i>
                       <span class="bounty-num">{{ item.bountyCoins || 0 }}</span>
                     </span>
-                  </template>
+                    </template>
 
-                  <span v-else class="post-type">[讨论]</span>
+                    <span v-else class="post-type">[讨论]</span>
 
-                  <router-link :to="'/forum/post/detail/' + item.postId" class="post-title">
-                    {{ item.title }}
-                  </router-link>
+                    <router-link :to="'/forum/post/detail/' + item.postId" class="post-title">
+                      {{ item.title }}
+                    </router-link>
+                  </div>
+                  <div class="post-info">
+                    <span class="author"><i class="el-icon-user"></i> {{ item.createBy }}</span>
+                    <span class="time"><i class="el-icon-time"></i> {{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                  </div>
                 </div>
-                <div class="post-info">
-                  <span class="author"><i class="el-icon-user"></i> {{ item.createBy }}</span>
-                  <span class="time"><i class="el-icon-time"></i> {{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                <div class="post-stats">
+                  <div class="stat-box">
+                    <span class="num">{{ item.commentCount || 0 }}</span>
+                    <span class="lab">回复</span>
+                  </div>
+                  <div class="stat-box">
+                    <span class="num">{{ item.viewCount || 0 }}</span>
+                    <span class="lab">浏览</span>
+                  </div>
                 </div>
               </div>
-              <div class="post-stats">
-                <div class="stat-box">
-                  <span class="num">{{ item.commentCount || 0 }}</span>
-                  <span class="lab">回复</span>
-                </div>
-                <div class="stat-box">
-                  <span class="num">{{ item.viewCount || 0 }}</span>
-                  <span class="lab">浏览</span>
-                </div>
-              </div>
+
+              <el-empty v-if="postList.length === 0" description="该板块暂时没有帖子"></el-empty>
             </div>
 
-            <el-empty v-if="postList.length === 0" description="该板块暂时没有帖子"></el-empty>
-          </div>
+            <pagination
+              v-show="total > 0"
+              :total="total"
+              :page.sync="queryParams.pageNum"
+              :limit.sync="queryParams.pageSize"
+              @pagination="getList"
+            />
+          </el-card>
+        </el-col>
 
-          <pagination
-            v-show="total > 0"
-            :total="total"
-            :page.sync="queryParams.pageNum"
-            :limit.sync="queryParams.pageSize"
-            @pagination="getList"
-          />
-        </el-card>
-      </el-col>
-
-      <el-col :span="6" class="hidden-xs-only">
-        <el-card shadow="never" class="side-card">
-          <el-button type="primary" icon="el-icon-edit" class="publish-btn" @click="handlePublish">
-            发布新帖
-          </el-button>
-          <div class="board-notice">
-            <h4>版规说明</h4>
-            <p>1. 请自觉遵守国家法律法规。</p>
-            <p>2. 严禁发布任何广告、色情或暴力内容。</p>
-            <p>3. 提问前请先搜索，保持社区氛围。</p>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        <el-col :span="6" class="hidden-xs-only">
+          <el-card shadow="never" class="side-card">
+            <el-button type="primary" icon="el-icon-edit" class="publish-btn" @click="handlePublish">
+              发布新帖
+            </el-button>
+            <div class="board-notice">
+              <h4>版规说明</h4>
+              <p>1. 请自觉遵守国家法律法规。</p>
+              <p>2. 严禁发布任何广告、色情或暴力内容。</p>
+              <p>3. 提问前请先搜索，保持社区氛围。</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
+
 </template>
 
 <script>
 import { listPost } from "@/api/forum/post";
+import ForumBanner from "@/components/Banner/index.vue";
 
 export default {
   name: "ForumPostList",
+  components: {ForumBanner},
   data() {
     return {
       loading: true,
